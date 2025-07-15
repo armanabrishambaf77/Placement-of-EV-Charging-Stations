@@ -17,7 +17,7 @@ This project solves the **Shared Autonomous Electric Vehicle (SAEV)** Location-R
 
 # Table of Contents
 
--[1. SAEV Network Parameters](./network.py#L2)
+- [1. SAEV Network Parameters](./network.py#L2)
   - [1.1. Demand Nodes with Priorities](./network.py#L12)
   - [1.2. Set Battery Capacity and Maximum Stations](./network.py#L14)
   - [1.3. Distance Matrix](./network.py#L17)
