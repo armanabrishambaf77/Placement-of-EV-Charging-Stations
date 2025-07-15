@@ -54,4 +54,4 @@ The following image illustrates the optimal route taken by SAEVs, as well as the
 
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/armanabrishambaf77/Placement-of-EV-Charging-Stations/blob/main/LICENSE.txt) file for details.
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE.txt) file for details.
