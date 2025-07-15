@@ -3,29 +3,33 @@
 import gurobipy as gp
 from gurobipy import GRB
 
+# 2. Build and Solve SAEV Model
 def build_and_solve_model(N, D, tau, d, MAX_STATIONS, plot_solution=None):
     """
-    Build and solve the SAEV Location-Routing Problem with Gurobi.
-    Optionally, plot_solution(N, D, d, A, x, y) after optimization.
+    Build and solve the Multi‐SAEV Location-Routing Problem with Gurobi.
     """
     print("Building and optimizing the Multi‐SAEV Location-Routing Problem...")
 
-    K = [1, 2]
-    A = [(i, j) for i in N for j in N if i != j and d[i][j] > 0]
+    # 2.1. Initialize Variables
+    K = [1, 2]    # K represents vehicle indices
+    A = [(i, j) for i in N for j in N if i != j and d[i][j] > 0]    #all valid node pairs (i, j) with positive distances
     M = 99999  # Big-M
 
     m = gp.Model("Multi_SAEV_LRP")
 
+    # 2.2. Decision Variables
     x = m.addVars(A, K, vtype=GRB.BINARY, name="x")                    # arc i→j by vehicle k
     y = m.addVars(N, vtype=GRB.BINARY, name="y")                       # Charging stations
     c = m.addVars(D.keys(), vtype=GRB.BINARY, name="c")                # Covered demand nodes
     r = m.addVars(N, K, vtype=GRB.CONTINUOUS, lb=0, name="r")          # recharge at i by k
     b = m.addVars(N, K, vtype=GRB.CONTINUOUS, lb=0, ub=tau, name="b")  # battery at i by k
 
+
+    # 2.3. Objective Function and Constraints
     # Objective: Maximize coverage
     m.setObjective(gp.quicksum(D[j] * c[j] for j in D), GRB.MAXIMIZE)
 
-    # Flow Conservation at Origin & Return Depot
+    # 2.4. Flow Conservation and Routing
     for k in K:
         m.addConstr(gp.quicksum(x[0, j, k] for j in N if (0, j) in A) == 1)
         m.addConstr(gp.quicksum(x[i, N[-1], k] for i in N if (i, N[-1]) in A) == 1)
@@ -37,7 +41,8 @@ def build_and_solve_model(N, D, tau, d, MAX_STATIONS, plot_solution=None):
     for j in D:
         m.addConstr(gp.quicksum(x[i, j, k] for i in N for k in K if (i, j) in A) == c[j])
         m.addConstr(gp.quicksum(x[j, i, k] for i in N for k in K if (j, i) in A) == c[j])
-    
+
+    # 2.5. Recharge and Battery Constraints
     for k in K:
         for (i, j) in A:
             m.addConstr(b[j, k] >= b[i, k] - d[i][j] + r[j, k] - M * (1 - x[i, j, k]))
@@ -65,8 +70,7 @@ def build_and_solve_model(N, D, tau, d, MAX_STATIONS, plot_solution=None):
                 if i != j and (i, j) in A:
                     m.addConstr(u[i, k] - u[j, k] + (N[-1] - 1) * x[i, j, k] <= N[-1] - 2)
 
-
-
+    # 2.6. Solve the Model and Extract Results
 
     m.setParam("TimeLimit", 60)
     m.setParam("OutputFlag", 0)
