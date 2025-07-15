@@ -17,7 +17,7 @@ This project solves the **Shared Autonomous Electric Vehicle (SAEV)** Location-R
 
 # Table of Contents
 
-- [1. SAEV Network Parameters](#1-saev-network-parameters)
+-[1. SAEV Network Parameters](#1-saev-network-parameters)
   - [1.1. Demand Nodes with Priorities](#11-demand-nodes-with-priorities)
   - [1.2. Set Battery Capacity and Maximum Stations](#12-set-battery-capacity-and-maximum-stations)
   - [1.3. Distance Matrix](#13-distance-matrix)
